@@ -1,10 +1,4 @@
 allprojects {
-
-    repositories {
-        
-    }
-}
-allprojects {
     repositories {
         mavenLocal()
         mavenCentral()
