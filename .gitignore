@@ -12,3 +12,4 @@ docs/
 .DS_Store
 kotlin-js-store
 secring.gpg
+.kotlin/

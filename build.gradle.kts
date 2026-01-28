@@ -1,7 +1,4 @@
-allprojects {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        maven("https://dl.bintray.com/kotlin/kotlinx")
-    }
+plugins {
+    alias(libs.plugins.kotlin.multiplatform) apply false
+    alias(libs.plugins.vanniktech.mavenPublish) apply false
 }

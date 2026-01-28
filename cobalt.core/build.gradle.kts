@@ -1,42 +1,20 @@
-import Libraries.KORGE_FOUNDATION
-import Libraries.KOTLINX_COLLECTIONS_IMMUTABLE
-import Libraries.KOTLIN_REFLECT
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    kotlin("multiplatform")
-    id("maven-publish")
-    id("signing")
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.vanniktech.mavenPublish)
 }
 
-val javaVersion = JavaVersion.VERSION_11
-
-java {
-    sourceCompatibility = javaVersion
-    targetCompatibility = javaVersion
-}
+group = "org.hexworks"
+version = "2.0.0"
 
 kotlin {
-
-    jvm {
-        withJava()
-        compilations.all {
-            kotlinOptions {
-                apiVersion = "1.9"
-                languageVersion = "1.9"
-                jvmTarget = javaVersion.toString()
-
-            }
-        }
-    }
-
+    jvm {}
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+    linuxX64()
     js(IR) {
-        compilations.all {
-            kotlinOptions {
-                sourceMap = true
-                moduleKind = "umd"
-                metaInfo = true
-            }
-        }
         browser {
             testTask {
                 useMocha()
@@ -46,32 +24,46 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                api(KOTLIN_REFLECT)
-                api(KOTLINX_COLLECTIONS_IMMUTABLE)
-
-                api(KORGE_FOUNDATION)
-            }
+        commonMain.dependencies {
+            api(libs.kotlin.reflect)
+            api(libs.kotlinx.collections.immutable)
+            api(libs.kotlin.logging)
         }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-            }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
         }
     }
-
 }
+mavenPublishing {
+    publishToMavenCentral()
 
-publishing {
-    publishWith(
-        project = project,
-        module = "cobalt.core",
-        desc = "Multiplatform utilities library for Kotlin."
-    )
-}
+    signAllPublications()
 
-signing {
-    isRequired = false
-    sign(publishing.publications)
+    coordinates(group.toString(), "cobalt", version.toString())
+
+    pom {
+        name = "cobalt"
+        description = "Multiplatform utilities library for Kotlin"
+        inceptionYear = "2018"
+        url = "https://github.com/Hexworks/cobalt"
+        licenses {
+            license {
+                name = "The Apache Software License, Version 2.0 "
+                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+                distribution = "repo"
+            }
+        }
+        developers {
+            developer {
+                id = "adam-arold"
+                name = "Adam Arold"
+                url = "https://github.com/adam-arold"
+            }
+        }
+        scm {
+            url = "https://github.com/Hexworks/cobalt.git"
+            connection = "git@github.com:Hexworks/cobalt.git"
+            developerConnection = "git@github.com:Hexworks/cobalt.git"
+        }
+    }
 }
