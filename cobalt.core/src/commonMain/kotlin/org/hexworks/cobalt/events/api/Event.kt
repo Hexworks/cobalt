@@ -10,20 +10,18 @@ interface Event {
 
     /**
      * A unique key for this [Event].
-     * If not supplied, [kotlin.reflect.KClass.simpleName] will be used.
      */
     val key: String
-        get() = this::class.simpleName
-            ?: throw IllegalArgumentException("Event class doesn't have a name: ${this::class}")
 
     /**
-     * The object which emitted *this* [Event].
+     * The object that emitted *this* [Event].
      */
-    val emitter: Any
+    val emitter: EventSource
 
     /**
-     * Contains a (possibly empty) sequence of [Event]s which lead up to *this* [Event] in reverse
+     * Contains a (possibly empty) sequence of [Event]s that lead up to *this* [Event] in reverse
      * chronological order (most recent is first, oldest is last).
+     * eg: `listOf(lastEvent, eventBefore, firstEvent)
      */
     val trace: Iterable<Event>
         get() = listOf()

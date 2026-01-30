@@ -9,16 +9,17 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @Suppress("TestFunctionName")
-class EventBusTest {
+class EventBusTest : EventSource {
+
+    override val id: String = "EventBusTest"
 
     private val target = EventBus.create()
 
     @Test
     fun When_a_subscription_for_a_scope_and_key_is_cancelled_other_subscriptions_for_the_same_combination_shouldnt_be_cancelled() {
 
-        val subscription0 = target.simpleSubscribeTo<TestEvent> {
-        }
-        val subscription1 = target.simpleSubscribeTo<TestEvent> {
+        val subscription0 = target.simpleSubscribeTo(TestEvent) {}
+        val subscription1 = target.simpleSubscribeTo(TestEvent) {
         }
 
         subscription0.dispose()
@@ -33,10 +34,10 @@ class EventBusTest {
         var sub1Notified = false
 
 
-        val subscription0 = target.simpleSubscribeTo<TestEvent> {
+        val subscription0 = target.simpleSubscribeTo(TestEvent) {
             sub0Notified = true
         }
-        target.simpleSubscribeTo<TestEvent> {
+        target.simpleSubscribeTo(TestEvent) {
             sub1Notified = true
         }
 
@@ -53,7 +54,7 @@ class EventBusTest {
 
         var notified = false
 
-        target.simpleSubscribeTo<TestEvent> {
+        target.simpleSubscribeTo(TestEvent) {
             notified = true
         }
 
@@ -66,7 +67,7 @@ class EventBusTest {
     fun When_subscribed_to_an_event_and_scope_and_the_proper_event_is_published_then_the_subscriber_should_be_notified() {
 
         var notified = false
-        target.simpleSubscribeTo<TestEvent>(TestScope) {
+        target.simpleSubscribeTo(TestEvent, TestScope) {
             notified = true
         }
 
@@ -79,7 +80,7 @@ class EventBusTest {
     fun When_subscribed_to_an_event_and_scope_and_the_proper_event_is_published_but_with_wrong_scope_then_the_subscriber_should_not_be_notified() {
 
         var notified = false
-        target.simpleSubscribeTo<TestEvent> {
+        target.simpleSubscribeTo(TestEvent) {
             notified = true
         }
 
@@ -93,7 +94,7 @@ class EventBusTest {
 
         var notified = false
 
-        target.subscribeTo<TestEvent>(key = TestEvent.key) {
+        target.subscribeTo(TestEvent) {
             notified = true
             KeepSubscription
         }
@@ -109,10 +110,10 @@ class EventBusTest {
 
         val notifications = mutableListOf<Int>()
 
-        target.simpleSubscribeTo<TestEvent> {
+        target.simpleSubscribeTo(TestEvent) {
             notifications += 0
         }
-        target.simpleSubscribeTo<TestEvent> {
+        target.simpleSubscribeTo(TestEvent) {
             notifications += 1
         }
 
@@ -125,10 +126,10 @@ class EventBusTest {
     fun When_EventBus_has_multiple_subscribers_for_the_same_event_but_different_scopes_only_one_should_be_notified_when_that_event_is_fired() {
 
         val notifications = mutableListOf<EventScope>()
-        target.simpleSubscribeTo<TestEvent>(TestScope) {
+        target.simpleSubscribeTo(TestEvent, TestScope) {
             notifications.add(TestScope)
         }
-        target.simpleSubscribeTo<TestEvent>(ApplicationScope) {
+        target.simpleSubscribeTo(TestEvent, ApplicationScope) {
             notifications.add(ApplicationScope)
         }
 
@@ -144,11 +145,11 @@ class EventBusTest {
     @Test
     fun When_subscribed_to_an_event_Then_subscriber_should_be_present_in_EventBus() {
 
-        val subscription = target.simpleSubscribeTo<TestEvent> { }
+        val subscription = target.simpleSubscribeTo(TestEvent) { }
 
         assertEquals(
             expected = listOf(subscription),
-            actual = target.fetchSubscribersOf(ApplicationScope, TestEvent.key).toList(),
+            actual = target.fetchSubscribersOf(TestEvent, ApplicationScope).toList(),
             message = "Subscribers should be empty."
         )
 
@@ -157,11 +158,11 @@ class EventBusTest {
     @Test
     fun When_unsubscribed_from_event_Then_subscriber_should_not_be_present_in_EventBus() {
 
-        target.simpleSubscribeTo<TestEvent> { }.dispose()
+        target.simpleSubscribeTo(TestEvent) { }.dispose()
 
         assertEquals(
             expected = listOf(),
-            actual = target.fetchSubscribersOf(ApplicationScope, TestEvent.key).toList(),
+            actual = target.fetchSubscribersOf(TestEvent, ApplicationScope).toList(),
             message = "Subscribers should be empty."
         )
 
@@ -172,7 +173,7 @@ class EventBusTest {
     fun When_invoking_callback_causes_exception_subscriber_should_be_cancelled_with_exception() {
         val exception = IllegalArgumentException()
         val expectedState = DisposedByException(exception)
-        val subscription = target.simpleSubscribeTo<TestEvent> {
+        val subscription = target.simpleSubscribeTo(TestEvent) {
             throw exception
         }
 
@@ -186,12 +187,14 @@ class EventBusTest {
     }
 
     data class TestEvent(
-        override val emitter: Any,
-        override val trace: Iterable<Event> = listOf()
+        override val emitter: EventSource,
+        override val key: String = TestEvent.key,
+        override val trace: Iterable<Event> = listOf(),
     ) : Event {
 
-        companion object {
-            val key = TestEvent::class.simpleName!!
+        companion object : EventDescriptor<TestEvent> {
+            override val key: String = "TestEvent"
+            override val eventType = TestEvent::class
         }
     }
 

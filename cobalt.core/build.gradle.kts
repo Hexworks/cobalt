@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.vanniktech.mavenPublish)
 }
 
-group = "org.hexworks"
+group = "org.hexworks.cobalt"
 version = "2.0.0"
 
 kotlin {
@@ -29,6 +29,12 @@ kotlin {
             api(libs.kotlinx.collections.immutable)
             api(libs.kotlin.logging)
         }
+
+        jvmMain.dependencies {
+            api(libs.slf4j)
+            api(libs.logback)
+        }
+
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
@@ -39,7 +45,7 @@ mavenPublishing {
 
     signAllPublications()
 
-    coordinates(group.toString(), "cobalt", version.toString())
+    coordinates(group.toString(), "cobalt.core", version.toString())
 
     pom {
         name = "cobalt"

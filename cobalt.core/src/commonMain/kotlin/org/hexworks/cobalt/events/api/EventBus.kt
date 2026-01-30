@@ -9,24 +9,24 @@ import org.hexworks.cobalt.events.internal.DefaultEventBus
 interface EventBus {
 
     /**
-     * Returns all subscribers of the event with the given [key] and [eventScope].
+     * Returns all subscribers of the event with the given [EventDescriptor] and [eventScope].
      */
-    fun fetchSubscribersOf(
+    fun <E: Event> fetchSubscribersOf(
+        descriptor: EventDescriptor<E>,
         eventScope: EventScope = ApplicationScope,
-        key: String
     ): Iterable<Subscription>
 
     /**
-     * Subscribes the callee to [Event]s which have [eventScope] and [key].
-     * [fn] will be called whenever there is a match. [CallbackResult] can
+     * Subscribes the callee to [Event]s which have [eventScope] and [EventDescriptor].
+     * [fn] will be called whenever there is a matching event. [CallbackResult] can
      * be used to control the [Subscription]:
      * - [KeepSubscription] will keep the [Subscription]
      * - [DisposeSubscription] will dispose it
      */
-    fun <T : Event> subscribeTo(
+    fun <E : Event> subscribeTo(
+        descriptor: EventDescriptor<E>,
         eventScope: EventScope = ApplicationScope,
-        key: String,
-        fn: (T) -> CallbackResult
+        fn: (E) -> CallbackResult
     ): Subscription
 
     /**

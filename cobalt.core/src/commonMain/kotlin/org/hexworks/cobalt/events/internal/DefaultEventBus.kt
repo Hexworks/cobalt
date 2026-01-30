@@ -10,35 +10,39 @@ internal class DefaultEventBus : EventBus {
 
     private var closed = false
 
-    private var subscriptions = mutableMapOf<SubscriberKey, MutableList<EventBusSubscription<*>>>()
+    private var subscriptions = mutableMapOf<SubscriberKey, EventSubscriptions<*>>()
     private val logger = LoggerFactory.getLogger(this::class)
 
-    override fun fetchSubscribersOf(eventScope: EventScope, key: String): Iterable<Subscription> {
-        return subscriptions.getOrElse(SubscriberKey(eventScope, key)) { listOf() }.toList()
+    override fun <E : Event> fetchSubscribersOf(
+        eventScope: EventScope,
+        descriptor: EventDescriptor<E>
+    ): Iterable<Subscription> {
+
+        return subscriptions[SubscriberKey(eventScope, descriptor.key)]?.subscriptions ?: emptyList()
     }
 
-    override fun <T : Event> subscribeTo(
+    override fun <E : Event> subscribeTo(
         eventScope: EventScope,
-        key: String,
-        fn: (T) -> CallbackResult
+        descriptor: EventDescriptor<E>,
+        fn: (E) -> CallbackResult
     ): Subscription = whenNotClosed {
         try {
-            logger.debug { "Subscribing to $key with scope $eventScope." }
+            logger.debug { "Subscribing to ${descriptor.key} with scope $eventScope." }
             val subscription = EventBusSubscription(
                 eventScope = eventScope,
-                key = key,
+                descriptor = descriptor,
                 callback = fn
             )
-            val subKey = SubscriberKey(eventScope, key)
-            val subs = subscriptions[subKey] ?: run {
-                val list = mutableListOf<EventBusSubscription<*>>()
-                subscriptions[subKey] = list
-                list
+            val subKey = SubscriberKey(eventScope, descriptor.key)
+            if (subscriptions.containsKey(subKey)) {
+                val subs = subscriptions[subKey] as EventSubscriptions<E>
+                subs.subscriptions.add(subscription)
+            } else {
+                subscriptions[subKey] = EventSubscriptions(descriptor, mutableListOf(subscription))
             }
-            subs.add(subscription)
             subscription
         } catch (e: Exception) {
-            logger.warn(e) { "Failed to subscribe to event key $key with scope $eventScope" }
+            logger.warn(e) { "Failed to subscribe to event key $descriptor with scope $eventScope" }
             throw e
         }
     }
@@ -52,7 +56,7 @@ internal class DefaultEventBus : EventBus {
             "Publishing event with key ${event.key} and scope $eventScope."
         }
         subscriptions[SubscriberKey(eventScope, event.key)]?.let { subscribers ->
-            subscribers.toList().forEach { subscription: EventBusSubscription<*> ->
+            subscribers.subscriptions.forEach { subscription: EventBusSubscription<*> ->
                 try {
                     if (subscription.callback.fixType().invoke(event) is DisposeSubscription) {
                         subscription.dispose()
@@ -72,7 +76,7 @@ internal class DefaultEventBus : EventBus {
     override fun cancelScope(scope: EventScope): Unit = whenNotClosed {
         logger.debug { "Cancelling scope $scope." }
         subscriptions.filter { it.key.scope == scope }
-            .flatMap { it.value }
+            .flatMap { it.value.subscriptions }
             .forEach {
                 try {
                     it.dispose()
@@ -84,19 +88,27 @@ internal class DefaultEventBus : EventBus {
 
     override fun close() {
         closed = true
-        subscriptions.values.flatten().forEach { it.dispose() }
+        subscriptions.values.flatMap { it.subscriptions }.forEach { it.dispose() }
     }
 
     private fun <T> whenNotClosed(fn: () -> T): T {
         return if (closed) error("This Event Bus is already closed.") else fn()
     }
 
-    private data class SubscriberKey(val scope: EventScope, val key: String)
+    private data class SubscriberKey(
+        val scope: EventScope,
+        val key: String
+    )
 
-    private inner class EventBusSubscription<in T : Event>(
+    private data class EventSubscriptions<E : Event>(
+        val descriptor: EventDescriptor<E>,
+        val subscriptions: MutableList<EventBusSubscription<E>> = mutableListOf()
+    )
+
+    private inner class EventBusSubscription<E : Event>(
         val eventScope: EventScope,
-        val key: String,
-        val callback: (T) -> CallbackResult
+        val descriptor: EventDescriptor<E>,
+        val callback: (E) -> CallbackResult
     ) : Subscription {
 
         override var disposeState: DisposeState = NotDisposed
@@ -106,13 +118,13 @@ internal class DefaultEventBus : EventBus {
         override fun dispose(disposeState: DisposeState) {
             return try {
                 logger.debug {
-                    "Cancelling event bus subscription with scope '$eventScope' and key '$key'."
+                    "Cancelling event bus subscription with scope '$eventScope' and key '${descriptor.key}'."
                 }
-                val key = SubscriberKey(eventScope, key)
+                val key = SubscriberKey(eventScope, descriptor.key)
                 this.disposeState = disposeState
                 subscriptions[key]?.let { subs ->
-                    subs.remove(this)
-                    if (subs.isEmpty()) {
+                    subs.subscriptions.remove(this)
+                    if (subs.subscriptions.isEmpty()) {
                         subscriptions.remove(key)
                     }
                 }
