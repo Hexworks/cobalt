@@ -1,5 +1,6 @@
 package org.hexworks.cobalt.events
 
+import org.hexworks.cobalt.core.api.UUID
 import org.hexworks.cobalt.core.api.behavior.DisposedByException
 import org.hexworks.cobalt.events.api.*
 import org.hexworks.cobalt.events.internal.ApplicationScope
@@ -11,7 +12,7 @@ import kotlin.test.assertTrue
 @Suppress("TestFunctionName")
 class EventBusTest : EventSource {
 
-    override val id: String = "EventBusTest"
+    override val id: UUID = UUID.randomUUID()
 
     private val target = EventBus.create()
 

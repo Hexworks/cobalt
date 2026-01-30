@@ -157,9 +157,7 @@ internal class DefaultPropertyListProperty<T, P : ObservableValue<T>>(
 
         other as DefaultPropertyListProperty<*, *>
 
-        if (value.map { it.value } != other.value.map { it.value }) return false
-
-        return true
+        return value.map { it.value } == other.value.map { it.value }
     }
 
     override fun hashCode(): Int {
@@ -167,4 +165,6 @@ internal class DefaultPropertyListProperty<T, P : ObservableValue<T>>(
         result = 31 * result + value.hashCode()
         return result
     }
+
+    companion object
 }

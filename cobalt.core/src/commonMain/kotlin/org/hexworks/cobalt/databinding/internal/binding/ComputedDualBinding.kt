@@ -3,7 +3,7 @@ package org.hexworks.cobalt.databinding.internal.binding
 import org.hexworks.cobalt.core.api.UUID
 import org.hexworks.cobalt.core.api.behavior.DisposeState
 import org.hexworks.cobalt.core.api.behavior.NotDisposed
-import org.hexworks.cobalt.databinding.api.Cobalt
+import org.hexworks.cobalt.databinding.internal.Cobalt
 import org.hexworks.cobalt.databinding.api.binding.Binding
 import org.hexworks.cobalt.databinding.api.event.ObservableValueChanged
 import org.hexworks.cobalt.databinding.api.extension.disposeSubscriptions
@@ -95,8 +95,13 @@ internal class ComputedDualBinding<out S0, out S1, T>(
     }
 
     override fun onChange(fn: (ObservableValueChanged<T>) -> Unit): Subscription {
-        return Cobalt.eventbus.simpleSubscribeTo<ObservableValueChanged<T>>(propertyScope) {
+        return Cobalt.eventbus.simpleSubscribeTo<ObservableValueChanged<T>>(
+            ObservableValueChanged.unsafeCast(),
+            propertyScope
+        ) {
             fn(it)
         }
     }
+
+    companion object
 }

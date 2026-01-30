@@ -22,9 +22,9 @@ interface Disposable {
 
     /**
      * Disposes this [Disposable] with the given [DisposeState].
-     * Default is [DisposedByHand].
+     * Default is [DisposedManually].
      */
-    fun dispose(disposeState: DisposeState = DisposedByHand)
+    fun dispose(disposeState: DisposeState = DisposedManually)
 
     /**
      * Disposes this [Disposable] when the value of [condition] becomes `true`.

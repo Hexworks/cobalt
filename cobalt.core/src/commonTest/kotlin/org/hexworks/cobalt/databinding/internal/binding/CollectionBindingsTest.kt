@@ -15,7 +15,7 @@ import org.hexworks.cobalt.databinding.api.extension.toProperty
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@Suppress("FunctionName", "TestFunctionName")
+@Suppress("TestFunctionName")
 class CollectionBindingsTest {
 
     private val prop1To3 = NUMBERS_1_TO_3.toProperty()

@@ -37,7 +37,7 @@ infix fun ObservableValue<String>.bindEqualsIgnoreCase(other: ObservableValue<St
     return ComputedDualBinding(
         this,
         other
-    ) { thisValue, otherValue -> thisValue.lowercase() == otherValue.lowercase() }
+    ) { thisValue, otherValue -> thisValue.equals(otherValue, ignoreCase = true) }
 }
 
 fun ObservableValue<String>.length(): Binding<Int> {

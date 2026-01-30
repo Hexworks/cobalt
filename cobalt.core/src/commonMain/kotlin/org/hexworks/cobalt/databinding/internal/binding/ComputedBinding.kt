@@ -1,6 +1,6 @@
 package org.hexworks.cobalt.databinding.internal.binding
 
-import org.hexworks.cobalt.databinding.api.Cobalt
+import org.hexworks.cobalt.databinding.internal.Cobalt
 import org.hexworks.cobalt.databinding.api.binding.Binding
 import org.hexworks.cobalt.databinding.api.event.ObservableValueChanged
 import org.hexworks.cobalt.databinding.api.event.ScalarChange
@@ -48,4 +48,6 @@ class ComputedBinding<S, T>(
             }
         })
     }
+
+    companion object
 }

@@ -12,4 +12,6 @@ internal class DefaultProperty<T>(
     initialValue = initialValue,
     name = optionalName ?: "DefaultProperty",
     validator = validator
-)
+) {
+    companion object
+}

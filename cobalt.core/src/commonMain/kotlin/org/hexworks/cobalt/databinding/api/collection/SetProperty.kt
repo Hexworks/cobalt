@@ -6,7 +6,7 @@ import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.databinding.api.value.WritableValue
 
 /**
- * A [SetProperty] is a [Property] which wraps an underlying [PersistentSet].
+ * A [SetProperty] is a [Property] that wraps an underlying [PersistentSet].
  * @see Property
  * @see ObservableValue
  * @see WritableValue

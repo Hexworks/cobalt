@@ -59,4 +59,6 @@ class DefaultSetProperty<T>(
     override fun clear(): PersistentSet<T> {
         return updateCurrentValue(SetClear) { it.clear() }
     }
+
+    companion object
 }

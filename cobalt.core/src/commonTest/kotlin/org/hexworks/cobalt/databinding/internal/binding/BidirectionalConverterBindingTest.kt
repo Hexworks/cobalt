@@ -9,7 +9,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@Suppress("TestFunctionName", "FunctionName")
+@Suppress("TestFunctionName")
 class BidirectionalConverterBindingTest {
 
     lateinit var target: Property<String>

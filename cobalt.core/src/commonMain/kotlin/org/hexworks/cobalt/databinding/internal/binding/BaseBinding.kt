@@ -3,7 +3,7 @@ package org.hexworks.cobalt.databinding.internal.binding
 import org.hexworks.cobalt.core.api.UUID
 import org.hexworks.cobalt.core.api.behavior.DisposeState
 import org.hexworks.cobalt.core.api.behavior.NotDisposed
-import org.hexworks.cobalt.databinding.api.Cobalt
+import org.hexworks.cobalt.databinding.internal.Cobalt
 import org.hexworks.cobalt.databinding.api.binding.Binding
 import org.hexworks.cobalt.databinding.api.event.ObservableValueChanged
 import org.hexworks.cobalt.databinding.api.extension.disposeSubscriptions
@@ -33,7 +33,6 @@ abstract class BaseBinding<S, T>(
 
     final override val id = UUID.randomUUID()
 
-    internal val logger = LoggerFactory.getLogger(this::class)
     internal val propertyScope = PropertyScope(id)
 
     override fun dispose(disposeState: DisposeState) {
@@ -44,8 +43,13 @@ abstract class BaseBinding<S, T>(
 
     @Suppress("UNCHECKED_CAST")
     override fun onChange(fn: (ObservableValueChanged<T>) -> Unit): Subscription {
-        return Cobalt.eventbus.simpleSubscribeTo<ObservableValueChanged<T>>(propertyScope) {
+        return Cobalt.eventbus.simpleSubscribeTo<ObservableValueChanged<T>>(
+            ObservableValueChanged.unsafeCast(),
+            propertyScope
+        ) {
             fn(it)
         }
     }
+
+    companion object
 }

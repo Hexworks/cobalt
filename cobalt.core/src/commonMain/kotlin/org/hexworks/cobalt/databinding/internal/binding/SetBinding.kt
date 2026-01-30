@@ -2,7 +2,7 @@ package org.hexworks.cobalt.databinding.internal.binding
 
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentSetOf
-import org.hexworks.cobalt.databinding.api.Cobalt
+import org.hexworks.cobalt.databinding.internal.Cobalt
 import org.hexworks.cobalt.databinding.api.collection.ObservableSet
 import org.hexworks.cobalt.databinding.api.event.ObservableValueChanged
 import org.hexworks.cobalt.databinding.api.event.SetAdd
@@ -80,4 +80,6 @@ class SetBinding<S, T>(
     }
 
     override fun toString() = "${this::class.simpleName}(source=$source, target=$target)"
+
+    companion object
 }

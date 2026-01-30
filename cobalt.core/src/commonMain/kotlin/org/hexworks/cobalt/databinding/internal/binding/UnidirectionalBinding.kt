@@ -1,6 +1,6 @@
 package org.hexworks.cobalt.databinding.internal.binding
 
-import org.hexworks.cobalt.databinding.api.Cobalt
+import org.hexworks.cobalt.databinding.internal.Cobalt
 import org.hexworks.cobalt.databinding.api.binding.Binding
 import org.hexworks.cobalt.databinding.api.converter.Converter
 import org.hexworks.cobalt.databinding.api.event.ObservableValueChanged
@@ -54,4 +54,6 @@ internal class UnidirectionalBinding<S, T>(
             }
         )
     }
+
+    companion object
 }

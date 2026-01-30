@@ -6,7 +6,7 @@ import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.databinding.api.value.WritableValue
 
 /**
- * A [CollectionProperty] is a [Property] which wraps an underlying [PersistentCollection].
+ * A [CollectionProperty] is a [Property] that wraps an underlying [PersistentCollection].
  * @see Property
  * @see ObservableValue
  * @see WritableValue

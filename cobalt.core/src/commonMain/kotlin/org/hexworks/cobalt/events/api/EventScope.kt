@@ -9,4 +9,6 @@ package org.hexworks.cobalt.events.api
  * object MyEventScope : EventScope
  * ```
  */
-interface EventScope
+interface EventScope {
+    companion object
+}

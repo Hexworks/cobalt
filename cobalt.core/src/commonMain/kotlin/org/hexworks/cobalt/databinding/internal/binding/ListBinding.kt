@@ -1,7 +1,7 @@
 package org.hexworks.cobalt.databinding.internal.binding
 
 import kotlinx.collections.immutable.PersistentList
-import org.hexworks.cobalt.databinding.api.Cobalt
+import org.hexworks.cobalt.databinding.internal.Cobalt
 import org.hexworks.cobalt.databinding.api.collection.ObservableList
 import org.hexworks.cobalt.databinding.api.event.*
 import org.hexworks.cobalt.databinding.api.extension.map
@@ -73,4 +73,6 @@ class ListBinding<S, T>(
     }
 
     override fun toString() = "${this::class.simpleName}(source=$source, target=$target)"
+
+    companion object
 }

@@ -10,9 +10,9 @@ version = "2.0.0"
 
 kotlin {
     jvm {}
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
+    //iosX64()
+    //iosArm64()
+    //iosSimulatorArm64()
     linuxX64()
     js(IR) {
         browser {
@@ -41,9 +41,9 @@ kotlin {
     }
 }
 mavenPublishing {
-    publishToMavenCentral()
+    //publishToMavenCentral()
 
-    signAllPublications()
+    //signAllPublications()
 
     coordinates(group.toString(), "cobalt.core", version.toString())
 

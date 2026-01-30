@@ -7,14 +7,20 @@ import kotlin.random.Random
 @Suppress("EXPERIMENTAL_API_USAGE")
 @OptIn(ExperimentalStdlibApi::class, ExperimentalUnsignedTypes::class)
 class DefaultUUID(val data: UByteArray) : UUID {
-    override fun equals(other: Any?): Boolean = other is DefaultUUID && this.data.contentEquals(other.data)
+    override fun equals(
+        other: Any?
+    ): Boolean = other is DefaultUUID && this.data.contentEquals(other.data)
+
     override fun hashCode(): Int = this.data.contentHashCode()
 
     companion object {
         private const val HEX = "0123456789ABCDEF"
 
         private val regex =
-            Regex("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", RegexOption.IGNORE_CASE)
+            Regex(
+                "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+                RegexOption.IGNORE_CASE
+            )
 
         val NIL: UUID get() = DefaultUUID("00000000-0000-0000-0000-000000000000")
 

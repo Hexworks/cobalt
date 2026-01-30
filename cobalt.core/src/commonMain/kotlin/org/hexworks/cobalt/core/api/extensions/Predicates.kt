@@ -6,7 +6,7 @@ infix fun <T> Predicate<T>.and(other: Predicate<T>): Predicate<T> = { value ->
     this(value) && other(value)
 }
 
-fun <T> Predicate<T>.negate(): Predicate<T> = { value ->
+fun <T> Predicate<T>.not(): Predicate<T> = { value ->
     !this(value)
 }
 

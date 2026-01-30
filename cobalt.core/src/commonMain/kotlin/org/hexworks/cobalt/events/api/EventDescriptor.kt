@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package org.hexworks.cobalt.events.api
 
 import kotlin.reflect.KClass
@@ -8,4 +10,8 @@ import kotlin.reflect.KClass
 interface EventDescriptor<E: Event> {
     val key: String
     val eventType: KClass<E>
+
+    fun <E: Event> unsafeCast(): EventDescriptor<E> = this as EventDescriptor<E>
+
+    companion object
 }

@@ -25,4 +25,6 @@ interface Event {
      */
     val trace: Iterable<Event>
         get() = listOf()
+
+    companion object
 }

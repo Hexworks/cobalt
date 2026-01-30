@@ -97,4 +97,6 @@ internal class DefaultPropertyMapProperty<K : Any, V, P : ObservableValue<V>>(
         val p = this
         uniqueProperties.remove(p.id)?.second?.dispose()
     }
+
+    companion object
 }

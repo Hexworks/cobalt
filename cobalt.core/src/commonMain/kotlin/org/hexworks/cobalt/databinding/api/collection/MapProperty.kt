@@ -6,7 +6,7 @@ import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.databinding.api.value.WritableValue
 
 /**
- * A [MapProperty] is a [Property] which wraps an underlying [PersistentMap].
+ * A [MapProperty] is a [Property] that wraps an underlying [PersistentMap].
  * @see Property
  * @see ObservableValue
  * @see WritableValue

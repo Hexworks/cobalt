@@ -6,6 +6,7 @@ import org.hexworks.cobalt.core.api.behavior.NotDisposed
 import org.hexworks.cobalt.events.api.*
 import org.hexworks.cobalt.logging.api.LoggerFactory
 
+@Suppress("UNCHECKED_CAST")
 internal class DefaultEventBus : EventBus {
 
     private var closed = false
@@ -14,16 +15,16 @@ internal class DefaultEventBus : EventBus {
     private val logger = LoggerFactory.getLogger(this::class)
 
     override fun <E : Event> fetchSubscribersOf(
+        descriptor: EventDescriptor<E>,
         eventScope: EventScope,
-        descriptor: EventDescriptor<E>
     ): Iterable<Subscription> {
 
         return subscriptions[SubscriberKey(eventScope, descriptor.key)]?.subscriptions ?: emptyList()
     }
 
     override fun <E : Event> subscribeTo(
-        eventScope: EventScope,
         descriptor: EventDescriptor<E>,
+        eventScope: EventScope,
         fn: (E) -> CallbackResult
     ): Subscription = whenNotClosed {
         try {
@@ -56,7 +57,8 @@ internal class DefaultEventBus : EventBus {
             "Publishing event with key ${event.key} and scope $eventScope."
         }
         subscriptions[SubscriberKey(eventScope, event.key)]?.let { subscribers ->
-            subscribers.subscriptions.forEach { subscription: EventBusSubscription<*> ->
+            //! Note that we need a `toList()` call here to avoid concurrent modification
+            subscribers.subscriptions.toList().forEach { subscription: EventBusSubscription<*> ->
                 try {
                     if (subscription.callback.fixType().invoke(event) is DisposeSubscription) {
                         subscription.dispose()

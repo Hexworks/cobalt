@@ -6,4 +6,6 @@ import org.hexworks.cobalt.events.api.EventScope
 /**
  * [EventScope] which can be used within property and binding objects.
  */
-data class PropertyScope(val id: UUID) : EventScope
+data class PropertyScope(val id: UUID) : EventScope {
+    companion object
+}

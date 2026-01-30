@@ -2,6 +2,8 @@ package org.hexworks.cobalt.databinding.api.event
 
 import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.events.api.Event
+import org.hexworks.cobalt.events.api.EventDescriptor
+import org.hexworks.cobalt.events.api.EventSource
 
 /**
  * Fired when an [ObservableValue] **changes** its value.
@@ -11,10 +13,14 @@ data class ObservableValueChanged<out T>(
     val newValue: T,
     val observableValue: ObservableValue<T>,
     val type: ChangeType,
-    override val emitter: Any,
-    override val trace: Iterable<Event> = listOf()
+    override val emitter: EventSource,
+    override val trace: Iterable<Event> = listOf(),
+    override val key: String = ObservableValueChanged.key
 ) : Event {
-    companion object
+    companion object : EventDescriptor<ObservableValueChanged<*>> {
+        override val key: String = "ObservableValueChanged"
+        override val eventType = ObservableValueChanged::class
+    }
 }
 
 sealed class ChangeType

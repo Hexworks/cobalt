@@ -6,7 +6,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@Suppress("FunctionName", "TestFunctionName")
+@Suppress("TestFunctionName")
 class DefaultPropertyDelegateTest {
 
     lateinit var property: Property<String>

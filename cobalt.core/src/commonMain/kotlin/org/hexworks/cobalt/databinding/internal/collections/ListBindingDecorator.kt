@@ -101,4 +101,6 @@ internal class ListBindingDecorator<T>(
         get() = binding.disposeState
 
     override fun dispose(disposeState: DisposeState) = binding.dispose(disposeState)
+
+    companion object
 }

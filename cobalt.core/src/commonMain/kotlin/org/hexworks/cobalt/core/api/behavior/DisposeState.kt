@@ -15,7 +15,7 @@ object NotDisposed : DisposeState(false)
 /**
  * The [Disposable] was disposed by the user.
  */
-object DisposedByHand : DisposeState(true)
+object DisposedManually : DisposeState(true)
 
 /**
  * The [Disposable] was disposed by some event.
@@ -25,4 +25,4 @@ data class DisposedByEvent<T : Any>(val event: T) : DisposeState(true)
 /**
  * The [Disposable] was disposed due to an [Exception].
  */
-data class DisposedByException(val exception: Exception) : DisposeState(true)
+data class DisposedByException<E: Exception>(val exception: E) : DisposeState(true)

@@ -7,7 +7,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-@Suppress("FunctionName", "TestFunctionName")
+@Suppress("TestFunctionName")
 class DefaultPropertyTest {
 
     private val target = XUL.toProperty()

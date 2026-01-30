@@ -3,7 +3,7 @@ package org.hexworks.cobalt.databinding.internal.property.base
 import org.hexworks.cobalt.core.api.UUID
 import org.hexworks.cobalt.core.api.extensions.abbreviate
 import org.hexworks.cobalt.core.internal.toAtom
-import org.hexworks.cobalt.databinding.api.Cobalt
+import org.hexworks.cobalt.databinding.internal.Cobalt
 import org.hexworks.cobalt.databinding.api.binding.Binding
 import org.hexworks.cobalt.databinding.api.converter.IdentityConverter
 import org.hexworks.cobalt.databinding.api.converter.IsomorphicConverter
@@ -58,28 +58,31 @@ abstract class BaseProperty<T>(
 
     override fun onChange(fn: (ObservableValueChanged<T>) -> Unit): Subscription {
         logger.debug { "Subscribing to changes to property: $this." }
-        return Cobalt.eventbus.simpleSubscribeTo<ObservableValueChanged<T>>(propertyScope) {
+        return Cobalt.eventbus.simpleSubscribeTo<ObservableValueChanged<T>>(
+            ObservableValueChanged.unsafeCast(),
+            propertyScope
+        ) {
             fn(it)
         }
     }
 
-    override fun bind(other: Property<T>, updateWhenBound: Boolean): Binding<T> {
+    override fun bind(other: Property<T>, bindingAction: BindingAction): Binding<T> {
         return bind(
             other = other,
-            updateWhenBound = updateWhenBound,
+            bindingAction = bindingAction,
             converter = identityConverter
         )
     }
 
     override fun <S> bind(
         other: Property<S>,
-        updateWhenBound: Boolean,
+        bindingAction: BindingAction,
         converter: IsomorphicConverter<S, T>
     ): Binding<T> {
         logger.debug { "Binding property $this to other property $other." }
         checkSelfBinding(other)
         other as? InternalProperty<S> ?: error("Can only bind Properties which implement InternalProperty.")
-        if (updateWhenBound) {
+        if (bindingAction == UpdateOnBind) {
             updateCurrentValue { converter.convert(other.value) }
         }
         return BidirectionalBinding(
@@ -91,21 +94,21 @@ abstract class BaseProperty<T>(
 
     override fun updateFrom(
         observable: ObservableValue<T>,
-        updateWhenBound: Boolean
+        bindingAction: BindingAction
     ): Binding<T> {
-        return updateFrom(observable, updateWhenBound) { it }
+        return updateFrom(observable, bindingAction) { it }
     }
 
     override fun <S> updateFrom(
         observable: ObservableValue<S>,
-        updateWhenBound: Boolean,
+        bindingAction: BindingAction,
         converter: (S) -> T
     ): Binding<T> {
         logger.debug {
             "Starting to update property $this from $observable."
         }
         checkSelfBinding(observable)
-        if (updateWhenBound) {
+        if (bindingAction == UpdateOnBind) {
             updateCurrentValue { converter(observable.value) }
         }
         return UnidirectionalBinding(observable, this, converter.toConverter())
@@ -207,12 +210,12 @@ abstract class BaseProperty<T>(
 
         other as BaseProperty<*>
 
-        if (id != other.id) return false
-
-        return true
+        return id == other.id
     }
 
     override fun hashCode(): Int {
         return id.hashCode()
     }
+
+    companion object
 }

@@ -14,4 +14,6 @@ internal class DefaultPropertyDelegate<T>(private val property: Property<T>) : P
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
         this.property.value = value
     }
+
+    companion object
 }

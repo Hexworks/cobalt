@@ -20,4 +20,6 @@ interface InternalProperty<T> : Property<T> {
         newValue: T,
         event: ObservableValueChanged<*>
     ): Boolean
+
+    companion object
 }

@@ -39,4 +39,6 @@ interface Logger {
      * accompanying message.
      */
     fun error(t: Throwable? = null, msgFn: () -> String)
+
+    companion object
 }

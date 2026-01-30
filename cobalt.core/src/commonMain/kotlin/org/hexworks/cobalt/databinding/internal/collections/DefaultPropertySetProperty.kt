@@ -101,4 +101,6 @@ internal class DefaultPropertySetProperty<T, V : ObservableValue<T>>(
         val v = this
         uniqueProperties.remove(v.id)?.second?.dispose()
     }
+
+    companion object
 }

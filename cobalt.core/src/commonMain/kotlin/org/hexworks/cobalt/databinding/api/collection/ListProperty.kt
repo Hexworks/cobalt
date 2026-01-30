@@ -6,7 +6,7 @@ import org.hexworks.cobalt.databinding.api.value.ObservableValue
 import org.hexworks.cobalt.databinding.api.value.WritableValue
 
 /**
- * A [ListProperty] is a [Property] which wraps an underlying [PersistentList].
+ * A [ListProperty] is a [Property] that wraps an underlying [PersistentList].
  * @see Property
  * @see ObservableValue
  * @see WritableValue

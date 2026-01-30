@@ -1,6 +1,6 @@
 package org.hexworks.cobalt.databinding.internal.binding
 
-import org.hexworks.cobalt.databinding.api.Cobalt
+import org.hexworks.cobalt.databinding.internal.Cobalt
 import org.hexworks.cobalt.databinding.api.binding.Binding
 import org.hexworks.cobalt.databinding.api.converter.IsomorphicConverter
 import org.hexworks.cobalt.databinding.api.event.ObservableValueChanged
@@ -81,4 +81,6 @@ internal class BidirectionalBinding<S, T>(
             }
         )
     }
+
+    companion object
 }

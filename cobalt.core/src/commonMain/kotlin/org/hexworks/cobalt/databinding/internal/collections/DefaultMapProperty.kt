@@ -62,4 +62,6 @@ class DefaultMapProperty<K : Any, V>(
     override fun clear(): PersistentMap<K, V> {
         return updateCurrentValue(MapClear) { it.clear() }
     }
+
+    companion object
 }

@@ -89,4 +89,6 @@ internal class DefaultListProperty<T>(
     override fun clear(): PersistentList<T> {
         return updateCurrentValue(ListClear) { it.clear() }
     }
+
+    companion object
 }
