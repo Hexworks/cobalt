@@ -48,7 +48,7 @@ interface Property<T> : WritableValue<T>, ObservableValue<T> {
     /**
      * Creates a [PropertyDelegate] for this [Property].
      */
-    fun asDelegate(): PropertyDelegate<T> = DefaultPropertyDelegate(this)
+    override fun asDelegate(): PropertyDelegate<T> = DefaultPropertyDelegate(this)
 
     companion object
 }

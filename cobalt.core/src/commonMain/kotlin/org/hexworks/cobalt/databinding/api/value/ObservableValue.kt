@@ -1,5 +1,7 @@
 package org.hexworks.cobalt.databinding.api.value
 
+import kotlin.properties.ReadOnlyProperty
+
 import org.hexworks.cobalt.core.api.UUID
 import org.hexworks.cobalt.databinding.api.event.ObservableValueChanged
 import org.hexworks.cobalt.events.api.EventSource
@@ -25,4 +27,9 @@ interface ObservableValue<out T> : Value<T>, EventSource {
     fun onChange(fn: (ObservableValueChanged<T>) -> Unit): Subscription
 
     companion object
+
+    /**
+     * Exposes this value as a read-only property delegate: `val x: T by observable.asDelegate()`.
+     */
+    fun asDelegate(): ReadOnlyProperty<Any?, T> = ReadOnlyProperty { _, _ -> value }
 }
