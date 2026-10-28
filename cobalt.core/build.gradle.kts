@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -9,12 +10,14 @@ group = "org.hexworks.cobalt"
 version = "2.0.0"
 
 kotlin {
-    jvm {}
-    //iosX64()
-    //iosArm64()
-    //iosSimulatorArm64()
-    linuxX64()
-    js(IR) {
+    // Pure Kotlin, so every target is just a compilation. Android consumers use the jvm
+    // variant (Java 17 bytecode), which is why there is no androidTarget here.
+    jvm {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_17
+        }
+    }
+    js {
         browser {
             testTask {
                 useMocha()
@@ -22,28 +25,45 @@ kotlin {
         }
         nodejs()
     }
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        browser {
+            testTask {
+                useMocha()
+            }
+        }
+        nodejs()
+    }
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+    macosX64()
+    macosArm64()
+    linuxX64()
+    linuxArm64()
+    mingwX64()
 
     sourceSets {
         commonMain.dependencies {
-            api(libs.kotlin.reflect)
             api(libs.kotlinx.collections.immutable)
-            api(libs.kotlin.logging)
         }
-
-        jvmMain.dependencies {
-            api(libs.slf4j)
-            api(libs.logback)
-        }
-
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
     }
 }
-mavenPublishing {
-    //publishToMavenCentral()
 
-    //signAllPublications()
+tasks.withType<JavaCompile>().configureEach {
+    sourceCompatibility = "17"
+    targetCompatibility = "17"
+}
+
+mavenPublishing {
+    publishToMavenCentral()
+    // CI passes the key as ORG_GRADLE_PROJECT_signingInMemoryKey; local builds stay unsigned.
+    if (providers.gradleProperty("signingInMemoryKey").isPresent) {
+        signAllPublications()
+    }
 
     coordinates(group.toString(), "cobalt.core", version.toString())
 
