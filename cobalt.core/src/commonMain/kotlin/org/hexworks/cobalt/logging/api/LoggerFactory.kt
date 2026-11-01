@@ -14,8 +14,14 @@ object LoggerFactory {
     /** Minimum level that gets logged. Defaults to [LogLevel.INFO]. */
     var level: LogLevel = LogLevel.INFO
 
-    /** Destination for log statements. Defaults to a console printer. */
-    var sink: LogSink = ConsoleLogSink
+    /** The sink installed out of the box: prints to standard output. */
+    val defaultSink: LogSink = ConsoleLogSink
+
+    /**
+     * Destination for log statements. Defaults to [defaultSink]; compare against it to tell
+     * whether an application installed a sink of its own.
+     */
+    var sink: LogSink = defaultSink
 
     fun getLogger(name: String): Logger = DefaultLogger(name)
 
